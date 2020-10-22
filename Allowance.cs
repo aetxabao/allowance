@@ -6,32 +6,49 @@ namespace allowance
     {
         private Account account;
         private Parent parent;
-        private Child child;
+        private Child[] children;
 
 
-        public void Run(int a, int p, int c1, int c2)
+        public void Run(int n, int a, int p, int c1, int c2)
         {
-            Init(a, p, c1, c2);
+            Console.WriteLine("Saldo inicial: {0}, ingreso semanal: {1}, gastos semanales:[{2},{3}], hijos:{4}", a, p, c1, c2, n);
+            Init(n, a, p, c1, c2);
             Start();
             Finish();
+            Console.WriteLine("Saldo final: {0}", account.Balance);
+            Console.WriteLine("Depositos totales: {0}", parent.Deposit);
+            for (int i = 0; i < n; i++)
+            {
+                Console.WriteLine("Hijo {0} ha gastado {1}", i, children[i].Expenses);
+            }
         }
 
-        private void Init(int a, int p, int c1, int c2)
+        private void Init(int n, int a, int p, int c1, int c2)
         {
             account = new Account(a);
             parent = new Parent(account, p);
-            child = new Child(account, c1, c2);
+            children = new Child[n];
+            for (int i = 0; i < n; i++)
+            {
+                children[i] = new Child(account, c1, c2);
+            }
         }
 
         private void Start()
         {
             parent.Start();
-            child.Start();
+            for (int i = 0; i < children.Length; i++)
+            {
+                children[i].Start();
+            }
         }
         private void Finish()
         {
             parent.Finish();
-            child.Finish();
+            for (int i = 0; i < children.Length; i++)
+            {
+                children[i].Finish();
+            }
         }
         public int Balance()
         {
@@ -40,15 +57,7 @@ namespace allowance
         static void Main(string[] args)
         {
             Allowance p = new Allowance();
-            Console.WriteLine("Saldo inicial: {0}, ingreso semanal: {1}, gastos semanales:[{2},{3}]", 0, 5, 3, 8);
-            p.Run(0, 5, 3, 8);
-            int a = p.Balance();
-            Console.WriteLine("Saldo final: {0}", a);
-            a = Math.Abs(a);
-            Console.WriteLine("Saldo inicial: {0}, ingreso semanal: {1}, gastos semanales:[{2},{3}]", a, 5, 3, 8);
-            p.Run(a, 5, 3, 8);
-            a = p.Balance();
-            Console.WriteLine("Saldo final: {0}", a);
+            p.Run(3, 0, 15, 3, 8);
         }
 
     }

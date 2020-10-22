@@ -10,6 +10,7 @@ namespace allowance
         private int a1;
         private int a2;
         private Random rnd;
+        public int Expenses { get; set; }
 
         public Child(Account storage, int a1, int a2)
         {
@@ -17,6 +18,7 @@ namespace allowance
             this.a1 = a1;
             this.a2 = a2;
             rnd = new Random();
+            this.Expenses = 0;
         }
         public void Start()
         {
@@ -36,6 +38,7 @@ namespace allowance
             {
                 a = rnd.Next(a1, a2);
                 account.Remove(a);
+                Expenses += a;
                 Thread.Sleep(7);
             }
         }

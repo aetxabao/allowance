@@ -7,11 +7,13 @@ namespace allowance
         private Account account;
         private Thread thread;
         private int amount;
+        public int Deposit { get; set; }
 
         public Parent(Account account, int amount)
         {
             this.account = account;
             this.amount = amount;
+            this.Deposit = 0;
         }
         public void Start()
         {
@@ -29,6 +31,7 @@ namespace allowance
             for (int i = 0; i < 52; i++)
             {
                 account.Insert(amount);
+                Deposit += amount;
                 Thread.Sleep(7);
             }
         }
