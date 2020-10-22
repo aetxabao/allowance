@@ -1,20 +1,38 @@
+using System.Threading;
+
 namespace allowance
 {
     public class Account
     {
         private readonly object token = new object();
         public int Balance { get; set; }
+        private int limit;
 
-        public Account(int amount)
+        private bool isClosed = false;
+
+        public Account(int amount, int limit)
         {
             this.Balance = amount;
+            this.limit = limit;
         }
 
-        public void Remove(int amount)
+        public bool Remove(int amount)
         {
             lock (token)
             {
-                Balance -= amount;
+                while (!isClosed)
+                {
+                    if (Balance - amount < limit)
+                    {
+                        Monitor.Wait(token);
+                    }
+                    else
+                    {
+                        Balance -= amount;
+                        return true;
+                    }
+                }
+                return false;
             }
         }
 
@@ -23,6 +41,16 @@ namespace allowance
             lock (token)
             {
                 Balance += amount;
+                Monitor.Pulse(token);
+            }
+        }
+
+        public void Close()
+        {
+            lock (token)
+            {
+                this.isClosed = true;
+                Monitor.PulseAll(token);
             }
         }
     }

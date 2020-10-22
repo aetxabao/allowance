@@ -9,14 +9,16 @@ namespace allowance
         private Thread thread;
         private int a1;
         private int a2;
+        private int q;
         private Random rnd;
         public int Expenses { get; set; }
 
-        public Child(Account storage, int a1, int a2)
+        public Child(Account storage, int a1, int a2, int q)
         {
             this.account = storage;
             this.a1 = a1;
             this.a2 = a2;
+            this.q = q;
             rnd = new Random();
             this.Expenses = 0;
         }
@@ -34,13 +36,25 @@ namespace allowance
         private void Agenda()
         {
             int a;
-            for (int i = 0; i < 52; i++)
+            int b;
+            try
             {
-                a = rnd.Next(a1, a2);
-                account.Remove(a);
-                Expenses += a;
-                Thread.Sleep(7);
+                for (int i = 0; i < 52; i++)
+                {
+                    a = rnd.Next(a1, a2);
+                    b = rnd.Next(0, 100);
+                    if (b < q)
+                    {
+                        a = a * 10;
+                    }
+                    if (account.Remove(a))
+                    {
+                        Expenses += a;
+                    }
+                    Thread.Sleep(7);
+                }
             }
+            catch (ThreadAbortException) { }
         }
     }
 }
