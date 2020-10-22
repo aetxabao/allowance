@@ -7,13 +7,15 @@ namespace allowance
         private readonly object token = new object();
         public int Balance { get; set; }
         private int limit;
+        private int timeout;
 
         private bool isClosed = false;
 
-        public Account(int amount, int limit)
+        public Account(int amount, int limit, int timeout)
         {
             this.Balance = amount;
             this.limit = limit;
+            this.timeout = timeout;
         }
 
         public bool Remove(int amount)
@@ -24,7 +26,18 @@ namespace allowance
                 {
                     if (Balance - amount < limit)
                     {
-                        Monitor.Wait(token);
+                        if (Monitor.Wait(token, timeout))
+                        {
+                            if (Balance - amount < limit)
+                            {
+                                return false;
+                            }
+                            else
+                            {
+                                Balance -= amount;
+                                return true;
+                            }
+                        }
                     }
                     else
                     {

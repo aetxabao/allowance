@@ -12,6 +12,7 @@ namespace allowance
         private int q;
         private Random rnd;
         public int Expenses { get; set; }
+        public int Blocks { get; set; }
 
         public Child(Account storage, int a1, int a2, int q)
         {
@@ -21,6 +22,7 @@ namespace allowance
             this.q = q;
             rnd = new Random();
             this.Expenses = 0;
+            this.Blocks = 0;
         }
         public void Start()
         {
@@ -50,6 +52,10 @@ namespace allowance
                     if (account.Remove(a))
                     {
                         Expenses += a;
+                    }
+                    else
+                    {
+                        Blocks++;
                     }
                     Thread.Sleep(7);
                 }
