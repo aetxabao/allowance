@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 
 namespace allowance
@@ -6,12 +7,16 @@ namespace allowance
     {
         private Account account;
         private Thread thread;
-        private int amount;
+        private int a1;
+        private int a2;
+        private Random rnd;
 
-        public Child(Account storage, int amount)
+        public Child(Account storage, int a1, int a2)
         {
             this.account = storage;
-            this.amount = amount;
+            this.a1 = a1;
+            this.a2 = a2;
+            rnd = new Random();
         }
         public void Start()
         {
@@ -26,9 +31,11 @@ namespace allowance
 
         private void Agenda()
         {
+            int a;
             for (int i = 0; i < 52; i++)
             {
-                account.Remove(amount);
+                a = rnd.Next(a1, a2);
+                account.Remove(a);
                 Thread.Sleep(7);
             }
         }
